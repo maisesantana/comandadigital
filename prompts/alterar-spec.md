@@ -28,12 +28,6 @@ IMPORTANTE:
 - Não crie novas funcionalidades para compensar a alteração.
 - Verifique se alguma especificação relacionada ficou inconsistente após a alteração e corrija somente o que for necessário para manter a especificação coerente.
 
-## IDIOMA
-
-- Todo o conteúdo das especificações deve estar em português do Brasil.
-- Mantenha nomes de tecnologias, frameworks e comandos do Spec Kit como `Django`, `Python`, `Spec Kit`, `/speckit-specify`, etc.
-- Os nomes dos elementos do domínio devem permanecer em português e seguir a terminologia definida no projeto.
-
 Ao terminar:
 
 1. Mostre quais arquivos/specs foram alterados.

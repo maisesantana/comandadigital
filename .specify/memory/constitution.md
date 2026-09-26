@@ -1,50 +1,92 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Relatório de impacto da sincronização
+Versão: 1.0.0 -> 1.1.0 (nova configuração obrigatória do Django)
+Princípios modificados: nenhum; princípios existentes preservados.
+Seções adicionadas: Configuração do Django.
+Seções removidas: nenhuma.
+Pendências: confirmar a data original de ratificação.
+Este relatório é temporário e deve ser removido antes do commit da emenda.
+-->
 
-## Core Principles
+# Constituição do Comanda Digital
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+## Princípios Fundamentais
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### 1. Qualidade e consistência do código
+O código Python DEVE seguir PEP 8 e as convenções do Django. Models DEVEM usar CamelCase;
+funções e variáveis DEVEM usar snake_case. Views DEVEM permanecer enxutas, coordenar as
+requisições e delegar regras de negócio aos models. Templates DEVEM limitar-se à apresentação
+e NÃO DEVEM conter regras de negócio. Toda mudança no esquema do banco de dados DEVE ser
+registrada em uma migration versionada. Essas regras tornam o código previsível e mantêm
+decisões de domínio fora da camada de apresentação.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### 2. Regras de domínio como invariantes
+Uma mesa DEVE ter no máximo um pedido em aberto por vez. O total do pedido DEVE ser
+recalculado automaticamente e NÃO DEVE ser editável manualmente. Um pedido NÃO DEVE ser
+fechado enquanto houver demanda que não esteja finalizada ou cancelada; ao fechar o pedido,
+a mesa DEVE ser liberada automaticamente. Cada regra DEVE ter uma única implementação
+canônica, sem duplicação entre Pedido e Demanda. As operações de domínio DEVEM preservar essas
+invariantes em todos os fluxos que alterem pedidos, demandas ou mesas.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### 3. Responsabilidades explícitas
+O projeto DEVE seguir o padrão MVT do Django e separar os domínios em apps de cardápio,
+mesas, pedidos e funcionarios. Relacionamentos entre models DEVEM ser declarados explicitamente
+com ForeignKey e related_name. Pedido DEVE ser responsável pelo ciclo de vida e pelo total do
+pedido; Demanda DEVE ser responsável pelo seu próprio estado de execução. Essa divisão define
+uma fonte canônica para cada comportamento e evita regras concorrentes.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### 4. Funcionalidade acompanhada de interface
+Cada funcionalidade DEVE ser desenvolvida junto com sua própria tela. A interface DEVE
+organizar as áreas principais em abas: Cardápio, Mesas, Pedidos e Cozinha. Uma funcionalidade
+demonstrada DEVE estar acessível pela interface correspondente, de modo que o comportamento
+possa ser operado e verificado no fluxo de trabalho do restaurante.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### 5. Verificação manual documentada
+Toda funcionalidade demonstrada DEVE ter ao menos um teste manual documentado com cenário e
+resultado esperado. O projeto NÃO DEVE criar nem exigir testes automatizados. A documentação
+manual DEVE permitir que outra pessoa repita o cenário e compare o resultado observado com o
+resultado esperado.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+## Arquitetura e regras de domínio
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+O padrão MVT do Django DEVE orientar a separação entre models, views e templates. Os apps
+cardápio, mesas, pedidos e funcionarios DEVEM manter responsabilidades alinhadas aos respectivos
+domínios. As regras invariantes deste documento prevalecem sobre decisões locais de
+implementação. Toda alteração de esquema DEVE incluir sua migration correspondente; nenhuma
+mudança de esquema pode depender de edição manual não versionada do banco de dados.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### Configuração do Django
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+O arquivo `settings.py` do projeto DEVE definir os seguintes valores:
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+```python
+LANGUAGE_CODE = 'pt-br'
+TIME_ZONE = 'America/Sao_Paulo'
+USE_I18N = True
+USE_TZ = False
+```
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+## Experiência e fluxo de desenvolvimento
+
+As telas DEVEM acompanhar a entrega de cada funcionalidade e integrar-se às abas Cardápio,
+Mesas, Pedidos e Cozinha. Antes de considerar uma funcionalidade demonstrada, a equipe DEVE
+registrar seu cenário de teste manual e o resultado esperado. Revisões DEVEM verificar a
+conformidade com estes princípios, inclusive as invariantes de pedidos, demandas e mesas, a
+migration de alterações de esquema e a documentação do teste manual. Todo o conteúdo do projeto
+e toda saída produzida pelo Spec Kit DEVE estar em Português do Brasil, exceto nomes de
+tecnologias, ferramentas e comandos, que permanecem sem tradução.
+
+## Governança
+
+Esta constituição prevalece sobre convenções locais conflitantes. Alterações DEVEM ser propostas
+neste documento, avaliadas quanto ao impacto sobre princípios, regras de domínio e trabalho
+existente, e registradas com justificativa e data. Uma alteração não pode enfraquecer
+silenciosamente uma invariante. A equipe DEVE revisar a conformidade durante a revisão de cada
+funcionalidade demonstrada.
+
+A versão DEVE seguir versionamento semântico MAJOR.MINOR.PATCH: MAJOR para remoção ou mudança
+incompatível de princípios; MINOR para novos princípios, seções ou expansão material das
+obrigações; PATCH para esclarecimentos e correções sem mudança de significado. Cada emenda
+DEVE atualizar a data da última alteração e explicar o impacto da versão.
+
+**Versão**: 1.1.0 | **Ratificada**: TODO(RATIFICATION_DATE): confirmar a data original de adoção | **Última alteração**: 2026-09-26
