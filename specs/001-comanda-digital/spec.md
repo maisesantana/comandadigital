@@ -24,20 +24,23 @@ Como atendente, quero cadastrar e organizar categorias e itens do cardápio, edi
 2. **Dado** que uma categoria ou item existe, **quando** o atendente edita seus dados ou o exclui, **então** a alteração aparece no cardápio e registros associados a pedidos existentes permanecem compreensíveis.
 3. **Dado** que um item está indisponível, **quando** o atendente tenta adicioná-lo a uma nova demanda, **então** o sistema impede a inclusão; ao torná-lo disponível, a inclusão é permitida.
 
-### História de usuário 2 - Abrir pedido e acompanhar valores (Prioridade: P1)
+### História de usuário 2 - Gerenciar mesas, abrir pedido e acompanhar valores (Prioridade: P1)
 
-Como atendente, quero consultar a situação das mesas, abrir um pedido em uma mesa livre e adicionar itens com suas quantidades, para registrar o consumo e acompanhar subtotal e total sem cálculos manuais.
+Como atendente, quero consultar o conjunto predefinido de mesas e acompanhar sua situação, abrir pedidos em mesas livres e registrar itens, para saber onde há lugar e acompanhar os valores sem cálculos manuais.
 
 **Por que esta prioridade**: A abertura do pedido inicia o fluxo operacional e evita comandas duplicadas na mesma mesa.
 
-**Teste independente**: Com duas mesas livres e uma ocupada, abrir um pedido em uma mesa livre, incluir itens em quantidades variadas e conferir os valores; tentar abrir outro pedido na mesa ocupada.
+**Teste independente**: Consultar as 10 mesas fixas, abrir um pedido em mesa livre e confirmar que ela passa a ocupada; encerrar ou cancelar o pedido e confirmar que a mesa fica livre; ocupar as 10 mesas e confirmar que novas aberturas ficam bloqueadas até uma mesa ser liberada.
 
 **Cenários de aceitação**:
 
-1. **Dado** que uma mesa está livre, **quando** o atendente abre um pedido nela, **então** a mesa passa a ser identificada como ocupada e o pedido fica associado a ela.
-2. **Dado** que uma mesa está ocupada por um pedido em aberto, **quando** o atendente tenta abrir outro pedido nessa mesa, **então** a operação é recusada e o pedido existente não é alterado.
-3. **Dado** que um pedido está aberto e há um item disponível no cardápio, **quando** o atendente adiciona esse item com uma quantidade positiva, **então** a demanda exibe a quantidade e o subtotal correspondente, e o total do pedido é recalculado automaticamente.
-4. **Dado** que o pedido tem uma demanda pendente, **quando** o atendente ajusta sua quantidade por uma ação permitida, **então** o subtotal e o total refletem a quantidade vigente, sem edição manual do total.
+1. **Dado** que as 10 mesas fixas foram predefinidas, **quando** o atendente consulta a área Mesas, **então** o sistema apresenta as 10 mesas e seus estados livre ou ocupada.
+2. **Dado** que uma mesa está livre, **quando** o atendente abre um pedido nela, **então** o pedido fica associado à mesa e seu estado muda automaticamente para ocupada.
+3. **Dado** que um pedido aberto é fechado ou cancelado conforme as regras permitidas, **quando** a operação termina, **então** o estado da mesa associada muda automaticamente para livre.
+4. **Dado** que uma mesa está ocupada por um pedido em aberto, **quando** o atendente tenta abrir outro pedido nessa mesa, **então** a operação é recusada e o pedido existente não é alterado.
+5. **Dado** que as 10 mesas estão ocupadas, **quando** o atendente tenta abrir outro pedido, **então** o sistema não abre pedido até que uma mesa seja liberada.
+6. **Dado** que um pedido está aberto e há um item disponível no cardápio, **quando** o atendente adiciona esse item com uma quantidade positiva, **então** a demanda exibe a quantidade e o subtotal correspondente, e o total do pedido é recalculado automaticamente.
+7. **Dado** que o pedido tem uma demanda pendente, **quando** o atendente ajusta sua quantidade por uma ação permitida, **então** o subtotal e o total refletem a quantidade vigente, sem edição manual do total.
 
 ### História de usuário 3 - Preparar demandas na cozinha (Prioridade: P1)
 
@@ -79,6 +82,7 @@ Como atendente, quero cancelar somente pedidos ainda não iniciados ou fechar pe
 - Uma categoria que ainda contém itens não pode ser excluída até que esses itens sejam removidos ou associados a outra categoria.
 - Um item usado em uma demanda de pedido aberto não pode ser excluído de forma que a demanda perca sua identificação ou seu valor.
 - Tentativas de cancelar demanda ou pedido fora das condições permitidas devem informar que a operação não foi realizada e manter os estados anteriores.
+- Quando as 10 mesas estiverem ocupadas, nenhuma nova abertura de pedido é permitida até que uma mesa volte a ficar livre.
 
 ## Requisitos *(obrigatório)*
 
@@ -88,8 +92,8 @@ Como atendente, quero cancelar somente pedidos ainda não iniciados ou fechar pe
 - **RF-002**: O atendente DEVE poder criar, consultar, editar e excluir categorias e itens do cardápio.
 - **RF-003**: Cada item do cardápio DEVE pertencer a uma categoria e possuir nome, preço e estado de disponibilidade.
 - **RF-004**: O atendente DEVE poder marcar um item como disponível ou indisponível; itens indisponíveis NÃO DEVEM ser adicionáveis a novas demandas.
-- **RF-005**: O sistema DEVE apresentar as mesas com os estados livre ou ocupada, refletindo a existência de pedido em aberto.
-- **RF-006**: O sistema DEVE permitir no máximo um pedido em aberto por mesa e DEVE recusar a abertura em mesa ocupada.
+- **RF-005**: O sistema DEVE apresentar ao atendente as 10 mesas predefinidas e fixas, cada uma com seu número e estado livre ou ocupada. O estado DEVE mudar automaticamente para ocupada ao abrir pedido e para livre ao fechar ou cancelar pedido.
+- **RF-006**: O sistema DEVE permitir no máximo um pedido em aberto por mesa e DEVE recusar a abertura em mesa ocupada. Quando as 10 mesas estiverem ocupadas, o sistema NÃO DEVE abrir novo pedido até que uma mesa seja liberada.
 - **RF-007**: O atendente DEVE poder adicionar a um pedido demandas compostas por item do cardápio e quantidade inteira positiva.
 - **RF-008**: Cada demanda DEVE apresentar seu item, quantidade, preço aplicável, subtotal e estado; o subtotal DEVE ser calculado pela quantidade multiplicada pelo preço aplicável.
 - **RF-009**: O total do pedido DEVE ser recalculado a partir dos subtotais das demandas não canceladas e NÃO DEVE poder ser editado manualmente.
@@ -110,7 +114,7 @@ Como atendente, quero cancelar somente pedidos ainda não iniciados ou fechar pe
 - **Mesa**: lugar de atendimento que pode estar livre ou ocupada por um único pedido em aberto.
 - **Pedido**: conjunto de demandas associado a uma mesa, com estado de aberto, fechado ou cancelado e total calculado.
 - **Demanda**: item e quantidade solicitados em um pedido, com preço aplicável, subtotal e estado de execução.
-- **Atendente**: usuário responsável por manter o cardápio e conduzir pedidos e mesas.
+- **Atendente**: usuário responsável por manter o cardápio, consultar a situação das mesas e conduzir pedidos.
 - **Cozinha**: usuário responsável por consultar e atualizar o andamento de preparo das demandas.
 
 ## Critérios de sucesso *(obrigatório)*
@@ -121,6 +125,7 @@ Como atendente, quero cancelar somente pedidos ainda não iniciados ou fechar pe
 - **CS-002**: Em cinco pedidos de conferência, com diferentes itens e quantidades, subtotal e total correspondem aos preços aplicáveis e às demandas não canceladas, sem cálculo ou edição manual.
 - **CS-003**: Um atendente consegue, em até dois minutos, selecionar uma mesa livre, abrir um pedido e adicionar três demandas com quantidades informadas, conferindo o total apresentado.
 - **CS-004**: Em um roteiro manual completo, atendente e cozinha conseguem identificar a mesa, o item, a quantidade e o estado de cada demanda sem recorrer a uma comanda em papel para transmitir atualizações.
+- **CS-005**: Em todos os cenários manuais de abertura, fechamento e cancelamento de pedidos, o estado da mesa é atualizado automaticamente; com as 10 mesas ocupadas, nenhuma nova abertura é aceita até uma mesa ser liberada.
 
 ## Pressupostos
 
@@ -131,6 +136,7 @@ Como atendente, quero cancelar somente pedidos ainda não iniciados ou fechar pe
 - A exclusão de categoria exige que ela não tenha itens associados. Um item ligado a demanda de pedido aberto não pode ser excluído enquanto essa demanda existir.
 - O total não inclui taxas, descontos ou gorjetas, pois não foram solicitados.
 - Cancelar um pedido com todas as demandas pendentes libera a mesa, assim como fechar um pedido com todas as demandas finalizadas ou canceladas.
+- O restaurante possui 10 mesas predefinidas, que não são alteradas pelo atendente durante a operação.
 
 ## Verificação manual documentada
 
@@ -142,3 +148,5 @@ Os cenários de aceitação desta especificação são testes manuais: uma pesso
 4. **Fechamento e liberação**: tentar fechar pedido com demanda pendente; finalizar ou cancelar todas as demandas e fechar novamente. **Resultado esperado**: a primeira tentativa é recusada; a segunda encerra o pedido e muda a mesa automaticamente para livre.
 5. **Cardápio e cozinha**: tornar um item indisponível, tentar adicioná-lo ao pedido e acompanhar outra demanda desde pendente até finalizada na área Cozinha. **Resultado esperado**: o item indisponível não é adicionado e a demanda percorre os estados permitidos, com informações corretas de mesa, item e quantidade.
 6. **Gerenciamento do cardápio**: criar uma categoria e um item, editar seus dados, excluí-los quando não houver vínculos impeditivos e tentar excluir uma categoria que ainda contenha item. **Resultado esperado**: criação, edição e exclusão permitidas aparecem na lista; a categoria com item associado não é excluída e o sistema informa a restrição.
+7. **Mesas predefinidas e estado automático**: consultar as 10 mesas fixas; abrir um pedido em uma mesa livre e confirmar que fica ocupada; fechar ou cancelar o pedido e confirmar que fica livre. **Resultado esperado**: a lista contém 10 mesas fixas e os estados acompanham automaticamente o ciclo do pedido.
+8. **Todas as mesas ocupadas**: abrir pedidos nas 10 mesas e tentar abrir outro pedido; liberar uma mesa fechando ou cancelando seu pedido conforme as regras e tentar novamente. **Resultado esperado**: a abertura é recusada enquanto as 10 mesas estão ocupadas e permitida após a liberação de uma mesa.

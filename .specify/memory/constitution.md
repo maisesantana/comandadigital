@@ -1,11 +1,11 @@
 <!--
-Relatório de impacto da sincronização
-Versão: 1.0.0 -> 1.1.0 (nova configuração obrigatória do Django)
-Princípios modificados: nenhum; princípios existentes preservados.
-Seções adicionadas: Configuração do Django.
-Seções removidas: nenhuma.
-Pendências: confirmar a data original de ratificação.
-Este relatório é temporário e deve ser removido antes do commit da emenda.
+Relatório de impacto da emenda
+Data: 2026-09-27
+Versão: 1.1.0 -> 2.0.0 (remoção da exigência do app funcionarios)
+Princípios modificados: 3, removida a exigência do app funcionarios.
+Seções modificadas: Arquitetura e regras de domínio, removida a exigência correspondente.
+Justificativa: o sistema não possui autenticação nem funcionalidade de gestão de funcionários.
+Pendência mantida: confirmar a data original de ratificação.
 -->
 
 # Constituição do Comanda Digital
@@ -30,7 +30,7 @@ invariantes em todos os fluxos que alterem pedidos, demandas ou mesas.
 
 ### 3. Responsabilidades explícitas
 O projeto DEVE seguir o padrão MVT do Django e separar os domínios em apps de cardápio,
-mesas, pedidos e funcionarios. Relacionamentos entre models DEVEM ser declarados explicitamente
+mesas e pedidos. Relacionamentos entre models DEVEM ser declarados explicitamente
 com ForeignKey e related_name. Pedido DEVE ser responsável pelo ciclo de vida e pelo total do
 pedido; Demanda DEVE ser responsável pelo seu próprio estado de execução. Essa divisão define
 uma fonte canônica para cada comportamento e evita regras concorrentes.
@@ -50,7 +50,7 @@ resultado esperado.
 ## Arquitetura e regras de domínio
 
 O padrão MVT do Django DEVE orientar a separação entre models, views e templates. Os apps
-cardápio, mesas, pedidos e funcionarios DEVEM manter responsabilidades alinhadas aos respectivos
+cardápio, mesas e pedidos DEVEM manter responsabilidades alinhadas aos respectivos
 domínios. As regras invariantes deste documento prevalecem sobre decisões locais de
 implementação. Toda alteração de esquema DEVE incluir sua migration correspondente; nenhuma
 mudança de esquema pode depender de edição manual não versionada do banco de dados.
@@ -89,4 +89,4 @@ incompatível de princípios; MINOR para novos princípios, seções ou expansã
 obrigações; PATCH para esclarecimentos e correções sem mudança de significado. Cada emenda
 DEVE atualizar a data da última alteração e explicar o impacto da versão.
 
-**Versão**: 1.1.0 | **Ratificada**: TODO(RATIFICATION_DATE): confirmar a data original de adoção | **Última alteração**: 2026-09-26
+**Versão**: 2.0.0 | **Ratificada**: TODO(RATIFICATION_DATE): confirmar a data original de adoção | **Última alteração**: 2026-09-27

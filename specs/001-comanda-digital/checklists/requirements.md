@@ -31,4 +31,4 @@
 
 ## Observações
 
-Todos os itens foram aprovados na revisão da especificação. Os cenários de verificação manual cobrem cardápio, disponibilidade, mesas, pedidos, demandas, cancelamento, fechamento e liberação automática da mesa. Não há pendências para esclarecimento ou revisão antes do planejamento.
+Todos os itens estão aprovados após a revisão: o sistema possui 10 mesas fixas, seus estados mudam automaticamente com o ciclo do pedido e novas aberturas são bloqueadas quando todas estão ocupadas.
