@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1 class="h3">Mesas</h1>
+        {% if error_message %}
+            <div class="alert alert-danger">{{ error_message }}</div>
+        {% endif %}
+        <div class="row g-3 mt-2">
+            {% for mesa in mesas %}
+                <div class="col-md-3">
+                    <div class="card border {% if mesa.status == 'ocupada' %}border-danger{% else %}border-success{% endif %}">
+                        <div class="card-body text-center">
+                            <h2 class="h5">Mesa {{ mesa.numero_mesa }}</h2>
+                            <span class="badge {% if mesa.status == 'ocupada' %}bg-danger{% else %}bg-success{% endif %}">
+                                {{ mesa.status }}
+                            </span>
+                            {% if mesa.status == 'livre' %}
+                                <div class="mt-3">
+                                    <a href="{% url 'mesa_abrir_pedido' mesa.pk %}" class="btn btn-sm btn-primary">Abrir pedido</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-muted">Nenhuma mesa cadastrada.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

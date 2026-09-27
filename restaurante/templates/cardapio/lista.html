@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
+            <h1 class="h3 mb-0">Cardápio</h1>
+            <div class="d-flex gap-2">
+                <a href="{% url 'categoria_create' %}" class="btn btn-primary btn-sm">Nova categoria</a>
+                <a href="{% url 'item_create' %}" class="btn btn-success btn-sm">Novo item</a>
+                <a href="{% url 'item_list' %}" class="btn btn-outline-secondary btn-sm">Gerenciar itens</a>
+            </div>
+        </div>
+
+        {% if error_message %}
+            <div class="alert alert-danger">{{ error_message }}</div>
+        {% endif %}
+
+        {% for categoria in categorias %}
+            <div class="border rounded p-3 mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h2 class="h5 mb-0">{{ categoria.nome_categoria }}</h2>
+                    <div>
+                        <a href="{% url 'categoria_update' categoria.pk %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <a href="{% url 'categoria_delete' categoria.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
+                    </div>
+                </div>
+                <ul class="list-group">
+                    {% for item in categoria.itens.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span>{{ item.nome_item }}</span>
+                                <small class="d-block text-muted">{{ item.disponivel|yesno:"Disponível,Indisponível" }}</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span>R$ {{ item.preco }}</span>
+                                <a href="{% url 'item_update' item.pk %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                <a href="{% url 'item_toggle_disponibilidade' item.pk %}" class="btn btn-sm {% if item.disponivel %}btn-outline-warning{% else %}btn-outline-success{% endif %}">
+                                    {% if item.disponivel %}Indisponibilizar{% else %}Disponibilizar{% endif %}
+                                </a>
+                                <a href="{% url 'item_delete' item.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">Sem itens cadastrados.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% empty %}
+            <p class="text-muted mt-3">Nenhuma categoria cadastrada.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

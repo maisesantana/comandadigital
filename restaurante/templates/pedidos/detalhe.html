@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h3 mb-0">Pedido {{ pedido.pk }} - Mesa {{ pedido.mesa.numero_mesa }}</h1>
+            <span class="badge bg-secondary">{{ pedido.status }}</span>
+        </div>
+
+        {% if error_message %}
+            <div class="alert alert-danger">{{ error_message }}</div>
+        {% endif %}
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <div class="card bg-light h-100">
+                    <div class="card-body">
+                        <h2 class="h5">Adicionar demanda</h2>
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form %}
+                                <div class="mb-3">
+                                    {{ field.label_tag }}
+                                    {{ field }}
+                                    {% if field.errors %}
+                                        <div class="text-danger small">{{ field.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <button type="submit" class="btn btn-primary">Adicionar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card bg-light h-100">
+                    <div class="card-body">
+                        <h2 class="h5">Resumo</h2>
+                        <p class="mb-1"><strong>Valor total:</strong> R$ {{ pedido.valor_total }}</p>
+                        <p class="mb-1"><strong>Observação:</strong> {{ pedido.observacao|default:'Sem observação' }}</p>
+                        <div class="mt-3 d-flex gap-2">
+                            <a href="{% url 'pedido_cancelar' pedido.pk %}" class="btn btn-outline-danger btn-sm">Cancelar pedido</a>
+                            <a href="{% url 'pedido_fechar' pedido.pk %}" class="btn btn-outline-success btn-sm">Fechar pedido</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="h5">Demandas</h2>
+        {% if demandas %}
+            <ul class="list-group">
+                {% for demanda in demandas %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ demanda.nome_item_snapshot }}</strong>
+                                <div class="small text-muted">Qtde: {{ demanda.quantidade }} | Subtotal: R$ {{ demanda.subtotal }} | Status: {{ demanda.status }}</div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                {% if demanda.status == 'pendente' %}
+                                    <a href="{% url 'demanda_avancar' demanda.pk %}" class="btn btn-sm btn-primary">Avançar</a>
+                                    <a href="{% url 'demanda_cancelar' demanda.pk %}" class="btn btn-sm btn-outline-danger">Cancelar</a>
+                                {% elif demanda.status == 'em preparo' %}
+                                    <a href="{% url 'demanda_avancar' demanda.pk %}" class="btn btn-sm btn-primary">Finalizar</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted mt-3">Nenhuma demanda registrada.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h3 mb-0">Itens do cardápio</h1>
+            <a href="{% url 'item_create' %}" class="btn btn-primary btn-sm">Novo item</a>
+        </div>
+
+        {% if error_message %}
+            <div class="alert alert-danger">{{ error_message }}</div>
+        {% endif %}
+
+        <ul class="list-group mt-3">
+            {% for item in itens %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span>{{ item.nome_item }} ({{ item.categoria.nome_categoria }})</span>
+                        <small class="d-block text-muted">{{ item.disponivel|yesno:"Disponível,Indisponível" }}</small>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span>R$ {{ item.preco }}</span>
+                        <a href="{% url 'item_update' item.pk %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <a href="{% url 'item_toggle_disponibilidade' item.pk %}" class="btn btn-sm {% if item.disponivel %}btn-outline-warning{% else %}btn-outline-success{% endif %}">
+                            {% if item.disponivel %}Indisponibilizar{% else %}Disponibilizar{% endif %}
+                        </a>
+                        <a href="{% url 'item_delete' item.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
+                    </div>
+                </li>
+            {% empty %}
+                <li class="list-group-item">Nenhum item cadastrado.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1 class="h3">Cozinha</h1>
+        {% if demandas %}
+            <ul class="list-group mt-3">
+                {% for demanda in demandas %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ demanda.nome_item_snapshot }}</strong>
+                            <div class="small text-muted">Mesa {{ demanda.pedido.mesa.numero_mesa }} | Pedido {{ demanda.pedido.pk }} | Quantidade: {{ demanda.quantidade }}</div>
+                        </div>
+                        <span class="badge {% if demanda.status == 'pendente' %}bg-warning text-dark{% else %}bg-info{% endif %}">{{ demanda.status }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted mt-2">Nenhuma demanda ativa cadastrada.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
